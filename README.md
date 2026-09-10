@@ -6,8 +6,8 @@ The current release is **1.8.0** and supports both 64-bit and 32-bit Notepad++ 8
 
 ## Download
 
-- **64-bit Notepad++:** `dist/SendToOtherView-1.8.0-x64.zip`
-- **32-bit Notepad++:** `dist/SendToOtherView-1.8.0-x86.zip`
+- **64-bit Notepad++:** [Download SendToOtherView-1.8.0-x64.zip](https://github.com/StephenWalker999/SendToOtherViewPUBLIC/releases/download/v1.8.0/SendToOtherView-1.8.0-x64.zip)
+- **32-bit Notepad++:** [Download SendToOtherView-1.8.0-x86.zip](https://github.com/StephenWalker999/SendToOtherViewPUBLIC/releases/download/v1.8.0/SendToOtherView-1.8.0-x86.zip)
 
 Choose the package that matches your Notepad++ installation. In Notepad++, select **? > Debug Info...** if you are unsure which architecture you use.
 
