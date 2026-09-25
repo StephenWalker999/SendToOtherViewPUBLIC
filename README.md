@@ -1,13 +1,13 @@
 # Send to Other View for Notepad++
 
-Send to Other View is a native Notepad++ plugin for copying or moving text from the active editor to the document open in the opposite view.
+Send to Other View is a native Notepad++ plugin for copying or moving text from the active editor to a configured destination file in the opposite view.
 
-The current release is **1.8.0** and supports both 64-bit and 32-bit Notepad++ 8.0 or later.
+The current release is **1.9.0** and supports both 64-bit and 32-bit Notepad++ 8.0 or later.
 
 ## Download
 
-- **64-bit Notepad++:** [Download SendToOtherView-1.8.0-x64.zip](https://github.com/StephenWalker999/SendToOtherViewPUBLIC/releases/download/v1.8.0/SendToOtherView-1.8.0-x64.zip)
-- **32-bit Notepad++:** [Download SendToOtherView-1.8.0-x86.zip](https://github.com/StephenWalker999/SendToOtherViewPUBLIC/releases/download/v1.8.0/SendToOtherView-1.8.0-x86.zip)
+- **64-bit Notepad++:** [Download SendToOtherView-1.9.0-x64.zip](https://github.com/StephenWalker999/SendToOtherViewPUBLIC/releases/download/v1.9.0/SendToOtherView-1.9.0-x64.zip)
+- **32-bit Notepad++:** [Download SendToOtherView-1.9.0-x86.zip](https://github.com/StephenWalker999/SendToOtherViewPUBLIC/releases/download/v1.9.0/SendToOtherView-1.9.0-x86.zip)
 
 Choose the package that matches your Notepad++ installation. In Notepad++, select **? > Debug Info...** if you are unsure which architecture you use.
 
@@ -28,7 +28,7 @@ Notepad++\plugins\SendToOtherView\SendToOtherView.dll
 
 ## Using the plugin
 
-Open two documents in Notepad++ and move one into the opposite view with **View > Move/Clone Current Document > Move to Other View**. The plugin commands then appear under **Plugins > Send to Other View** and in the editor context menu.
+The plugin commands appear under **Plugins > Send to Other View** and in the editor context menu. By default, filenames such as `#40227_Example.log` resolve to `#40227_Notes.txt` in the same folder. When a source filename does not match the configured pattern, the plugin uses the document currently selected in the opposite view.
 
 Available transfer commands:
 
@@ -45,7 +45,46 @@ Choose where transferred text is placed with one of these mutually exclusive opt
 - **Insert at start of file**.
 - **Insert at current cursor location** in the opposite view.
 
-Copy and move operations are undoable. The plugin also warns when the opposite view has no document, a document is read-only, or a selection command has no selected text.
+The insertion position and SMART timestamp option persist between Notepad++ sessions. Select **Settings ...** to open the plugin configuration file in the current Notepad++ instance.
+
+Copy and move operations are undoable. The plugin also warns when a required destination is unavailable, a document is read-only, or a selection command has no selected text.
+
+## Scratchpad destination routing
+
+The plugin creates `SendToOtherView.ini` in Notepad++'s per-user plugin configuration directory, normally `%APPDATA%\Notepad++\plugins\Config`. Its default scratchpad configuration is:
+
+```ini
+[README]
+IMPORTANT=If you change this file manually, restart Notepad++ for the changes to take effect.
+
+[Scratchpad]
+SourcePattern=(?<fullprefix>(?:#)(?<identity>[^_]+)(?:_))(?<name>.*)(?<suffix>\.log)
+DestinationPattern=#(?<identity>)_Notes.txt
+DestinationTemplate=Ticket No:#(?<identity>)_Notes.txt\n(?<fullprefix>)\n\nName: (?<name>)\nSuffix: (?<suffix>)\n\n------
+CreateMissingFiles=false
+
+[Location]
+InsertPosition=End
+
+[SMART]
+RemoveLeadingTimestamp=true
+```
+
+`SourcePattern` uses named capture groups. Those captures can be inserted into `DestinationPattern` to select the destination filename and into `DestinationTemplate` to populate a newly created file. The template recognizes `\n`, `\r`, `\t`, and `\\` escape sequences.
+
+For example, the source file `#40227_Example.log` resolves to `#40227_Notes.txt`. If that destination is created, its initial contents are:
+
+```text
+Ticket No:#40227_Notes.txt
+#40227_
+
+Name: Example
+Suffix: .log
+
+------
+```
+
+When `CreateMissingFiles=false`, the plugin asks before creating a missing destination; accepting the prompt also enables automatic creation for future transfers. The template is used only for a new destination and never overwrites an existing file. `InsertPosition` accepts `End`, `Start`, or `Cursor`; the Boolean options accept `true`/`false`, `yes`/`no`, `on`/`off`, or `1`/`0`. Restart Notepad++ after manually editing the INI.
 
 ## SMART Copy
 
@@ -72,9 +111,18 @@ Banana,"Paris, France",Yellow
 Cherry,"Rome, Italy",Red
 ```
 
-The timestamp option is enabled each time the plugin loads and affects only SMART Copy commands.
+The timestamp option is enabled by default, persists between plugin sessions, and affects only SMART Copy commands.
 
 ## Version history
+
+### 1.9.0
+
+- Added configurable source-pattern matching and destination filename templates using named captures.
+- Added optional creation of missing destination files and templated initial file contents.
+- Added silent fallback to the currently selected opposite-view document when a source filename does not match.
+- Persisted the insertion position and SMART timestamp-removal option between sessions.
+- Added **Settings ...** to open `SendToOtherView.ini` in the current Notepad++ instance.
+- Added validation and user feedback for invalid patterns, templates, filenames, and inaccessible destinations.
 
 ### 1.8.0
 
